@@ -1,13 +1,13 @@
-mod movement;
-mod player;
 mod camera;
 mod component;
+mod movement;
+mod player;
 
+use crate::camera::CameraPlugin;
 use crate::movement::MovementPlugin;
+use crate::player::PlayerPlugin;
 use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, WindowResolution};
-use crate::camera::CameraPlugin;
-use crate::player::PlayerPlugin;
 
 fn main() {
     App::new()
@@ -22,16 +22,27 @@ fn main() {
         .add_systems(Startup, setup)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
-        .add_plugins(PlayerPlugin)
+        .add_plugins(PlayerPlugin::with_debug())
         .run();
 }
 
 const PLAYER_SPRITE_PATH: &str = "player_a_01.png";
 const LASER_SPRITE_PATH: &str = "laser_a_01.png";
-const PLAYER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
-const LASER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
-const BASE_MOVEMENT_SPEED: f32 = 500.0;
+
 const SPRITE_SCALE: f32 = 0.5;
+const PLAYER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
+// calculate the width and height after scaling
+const PLAYER_SPRITE_SCALED_WH: (f32, f32) = (
+    PLAYER_SPRITE_WH.0 * SPRITE_SCALE,
+    PLAYER_SPRITE_WH.1 * SPRITE_SCALE,
+);
+const LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
+// calculate the width and height after scaling
+const LASER_SPRITE_SCALED_WH: (f32, f32) = (
+    LASER_SPRITE_WH.0 * SPRITE_SCALE,
+    LASER_SPRITE_WH.1 * SPRITE_SCALE,
+);
+const BASE_MOVEMENT_SPEED: f32 = 500.0;
 
 #[derive(Resource)]
 pub struct WindowSize {
