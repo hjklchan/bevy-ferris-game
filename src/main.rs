@@ -90,6 +90,21 @@ pub struct GameTextures {
     enemy_laser: Handle<Image>,
 }
 
+#[derive(Resource)]
+pub struct SpawnTimer {
+    timer: Timer,
+    enemy_attack_timer: Timer,
+}
+
+impl Default for SpawnTimer {
+    fn default() -> Self {
+        Self {
+            timer: Timer::from_seconds(2.0, TimerMode::Repeating),
+            enemy_attack_timer: Timer::from_seconds(0.5, TimerMode::Repeating),
+        }
+    }
+}
+
 pub fn setup(mut commands: Commands, window: Query<&Window, With<PrimaryWindow>>) {
     // Insert "WindowSize" resource
     let window = window.single();
