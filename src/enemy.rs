@@ -30,13 +30,13 @@ fn spawn_enemy(
     time: Res<Time>,
     mut spawn_timer: ResMut<SpawnTimer>,
 ) {
-    spawn_timer.timer.tick(time.delta());
+    spawn_timer.enemy.tick(time.delta());
 
     let mut rng = thread_rng();
     let spawn_range_x = rng.gen_range(-window_size.half_width()..window_size.half_width());
     let spawning_y = window_size.half_height() + ENEMY_SPRITE_SCALED_WH.1;
 
-    if spawn_timer.timer.finished() {
+    if spawn_timer.enemy.finished() {
         commands.spawn((
             Enemy,
             SpriteBundle {
@@ -64,13 +64,13 @@ fn enemy_fire(
     mut spawn_timer: ResMut<SpawnTimer>,
 ) {
     for enemy_tf in enemy_query.iter() {
-        spawn_timer.enemy_attack_timer.tick(time.delta());
+        spawn_timer.enemy_laser.tick(time.delta());
 
         let translation = &enemy_tf.translation;
         let attack_port_x = translation.x;
         let attack_port_y = translation.y - ENEMY_SPRITE_SCALED_WH.1;
 
-        if spawn_timer.enemy_attack_timer.finished() {
+        if spawn_timer.enemy_laser.finished() {
             // 生成敌人镭射
             commands.spawn((
                 Laser,

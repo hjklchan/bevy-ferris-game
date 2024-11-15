@@ -31,41 +31,51 @@ fn main() {
         .run();
 }
 
-// 玩家精灵路径
+// 玩家精灵的路径
 const PLAYER_SPRITE_PATH: &str = "player_a_01.png";
-// 玩家镭射精灵路径
+// 玩家镭射精灵的路径
 const PLAYER_LASER_SPRITE_PATH: &str = "laser_a_01.png";
-// 敌人精灵路径
+// 敌人精灵的路径
 const ENEMY_SPRITE_PATH: &str = "enemy_a_01.png";
-// 敌人镭射精灵路径
+// 敌人镭射的精灵路径
 const ENEMY_LASER_SPRITE_PATH: &str = "laser_b_01.png";
 
+// 精灵缩放的比例
 const SPRITE_SCALE: f32 = 0.5;
+// 玩家精灵的宽高
 const PLAYER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
 // Player - calculate the width and height after scaling
+// 玩家精灵缩放后的宽高
 const PLAYER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_SPRITE_WH.0 * SPRITE_SCALE,
     PLAYER_SPRITE_WH.1 * SPRITE_SCALE,
 );
 
+// 玩家镭射精灵的宽高
 const PLAYER_LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
 // Player' laser - calculate the width and height after scaling
+// 玩家镭射精灵缩放后的宽高
 const PLAYER_LASER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_LASER_SPRITE_WH.0 * SPRITE_SCALE,
     PLAYER_LASER_SPRITE_WH.1 * SPRITE_SCALE,
 );
 
+// 敌人精灵的宽高
 const ENEMY_SPRITE_WH: (f32, f32) = (93.0, 84.0);
+// 敌人精灵缩放后的宽高
 const ENEMY_SPRITE_SCALED_WH: (f32, f32) = (
     ENEMY_SPRITE_WH.0 * SPRITE_SCALE,
     ENEMY_SPRITE_WH.1 * SPRITE_SCALE,
 );
+// 敌人镭射精灵的宽高
 const ENEMY_LASER_SPRITE_WH: (f32, f32) = (17.0, 55.0);
+// 敌人镭射精灵缩放后的宽高
 const ENEMY_LASER_SPRITE_SCALED_WH: (f32, f32) = (
     ENEMY_LASER_SPRITE_WH.0 * SPRITE_SCALE,
     ENEMY_LASER_SPRITE_WH.1 * SPRITE_SCALE,
 );
 
+// 基础移动速度
 const BASE_MOVEMENT_SPEED: f32 = 500.0;
 
 #[derive(Resource)]
@@ -92,17 +102,18 @@ pub struct GameTextures {
     enemy_laser: Handle<Image>,
 }
 
+// 生成实体 Timer
 #[derive(Resource)]
 pub struct SpawnTimer {
-    timer: Timer,
-    enemy_attack_timer: Timer,
+    enemy: Timer,
+    enemy_laser: Timer,
 }
 
 impl Default for SpawnTimer {
     fn default() -> Self {
         Self {
-            timer: Timer::from_seconds(2.0, TimerMode::Repeating),
-            enemy_attack_timer: Timer::from_seconds(0.5, TimerMode::Repeating),
+            enemy: Timer::from_seconds(2.0, TimerMode::Repeating),
+            enemy_laser: Timer::from_seconds(0.5, TimerMode::Repeating),
         }
     }
 }
