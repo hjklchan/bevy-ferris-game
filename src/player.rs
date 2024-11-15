@@ -96,13 +96,13 @@ fn player_fire(
             let left_hand_x = player_translation.x - sprite_scaled_w / 2.0;
             let right_hand_x = player_translation.x + sprite_scaled_w / 2.0;
 
-            commands.spawn_batch([
-                (
+            let mut spawn_laser_closure = |offset: f32| {
+                commands.spawn((
                     Laser,
                     SpriteBundle {
                         transform: Transform {
                             translation: Vec3::new(
-                                right_hand_x,
+                                offset,
                                 player_translation.y + sprite_scaled_h,
                                 0.0,
                             ),
@@ -116,28 +116,11 @@ fn player_fire(
                         value: Vec3::new(0.0, 1.0, 0.0),
                     },
                     Movement,
-                ),
-                (
-                    Laser,
-                    SpriteBundle {
-                        transform: Transform {
-                            translation: Vec3::new(
-                                left_hand_x,
-                                player_translation.y + sprite_scaled_h,
-                                0.0,
-                            ),
-                            scale: Vec3::new(SPRITE_SCALE, SPRITE_SCALE, 1.0),
-                            ..Default::default()
-                        },
-                        texture: game_textures.laser.clone(),
-                        ..Default::default()
-                    },
-                    Velocity {
-                        value: Vec3::new(0.0, 1.0, 0.0),
-                    },
-                    Movement,
-                ),
-            ]);
+                ));
+            };
+
+            spawn_laser_closure(left_hand_x);
+            spawn_laser_closure(right_hand_x);
         }
     }
 }
