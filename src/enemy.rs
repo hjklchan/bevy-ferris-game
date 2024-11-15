@@ -1,10 +1,14 @@
-use bevy::prelude::*;
+use bevy::{
+    math::bounding::{Aabb2d, IntersectsVolume},
+    prelude::*,
+};
 use rand::{thread_rng, Rng};
 
 use crate::{
-    component::{Enemy, FromEnemy, Laser},
+    component::{Enemy, FromEnemy, Laser, Player},
     movement::{Movement, Velocity},
-    GameTextures, SpawnTimer, WindowSize, ENEMY_SPRITE_SCALED_WH, SPRITE_SCALE,
+    GameTextures, SpawnTimer, WindowSize, ENEMY_LASER_SPRITE_SCALED_WH, ENEMY_SPRITE_SCALED_WH,
+    PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE,
 };
 
 pub struct EnemyPlugin;
@@ -14,6 +18,7 @@ impl Plugin for EnemyPlugin {
         app.insert_resource(SpawnTimer::default());
         app.add_systems(Update, spawn_enemy);
         app.add_systems(Update, enemy_fire);
+        app.add_systems(Update, enemy_laser_hit_player);
         app.add_systems(Update, despawn_enemy);
     }
 }
@@ -85,6 +90,40 @@ fn enemy_fire(
                     ..Default::default()
                 },
             ));
+        }
+    }
+}
+
+#[allow(clippy::type_complexity)]
+fn enemy_laser_hit_player(
+    mut commands: Commands,
+    laser_query: Query<(Entity, &Transform), (With<Laser>, With<FromEnemy>)>,
+    player_query: Query<(Entity, &Transform), With<Player>>,
+) {
+    // determine if player still alive
+    if let Ok((player_ent, player_tf)) = player_query.get_single() {
+        for (laser_ent, laser_tf) in laser_query.iter() {
+            let is_collide = Aabb2d::new(
+                laser_tf.translation.truncate(),
+                Vec2::new(
+                    ENEMY_LASER_SPRITE_SCALED_WH.0 / 2.0,
+                    ENEMY_LASER_SPRITE_SCALED_WH.1 / 2.0,
+                ),
+            )
+            .intersects(&Aabb2d::new(
+                player_tf.translation.truncate(),
+                Vec2::new(
+                    PLAYER_SPRITE_SCALED_WH.0 / 2.0,
+                    PLAYER_SPRITE_SCALED_WH.1 / 2.0,
+                ),
+            ));
+
+            if is_collide {
+                // remove the specified laser entity
+                commands.entity(laser_ent).despawn();
+                // remove the player entity
+                commands.entity(player_ent).despawn();
+            }
         }
     }
 }
