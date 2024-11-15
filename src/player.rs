@@ -24,7 +24,6 @@ impl Plugin for PlayerPlugin {
         app.add_systems(PostStartup, spawn_player);
         app.add_systems(Update, player_movement);
         app.add_systems(Update, player_fire);
-        app.add_systems(Update, despawn_laser);
         app.add_systems(Update, player_laser_hit_enemy);
     }
 }
@@ -131,20 +130,7 @@ fn player_fire(
     }
 }
 
-fn despawn_laser(
-    mut commands: Commands,
-    query: Query<(Entity, &Transform), With<Laser>>,
-    window_size: Res<WindowSize>,
-) {
-    let max_window_h = window_size.half_height();
-    let min_window_h = -window_size.half_height();
 
-    for (entity, transform) in query.iter() {
-        if transform.translation.y > max_window_h || transform.translation.y < min_window_h {
-            commands.entity(entity).despawn();
-        }
-    }
-}
 
 #[allow(clippy::type_complexity)]
 fn player_laser_hit_enemy(

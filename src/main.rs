@@ -9,6 +9,7 @@ use crate::movement::MovementPlugin;
 use crate::player::PlayerPlugin;
 use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, WindowResolution};
+use component::Laser;
 use enemy::EnemyPlugin;
 
 fn main() {
@@ -26,6 +27,7 @@ fn main() {
         .add_plugins(MovementPlugin)
         .add_plugins(PlayerPlugin::with_debug())
         .add_plugins(EnemyPlugin)
+        .add_systems(Update, despawn_laser)
         .run();
 }
 
@@ -124,4 +126,19 @@ pub fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     };
 
     commands.insert_resource(game_textures_resource);
+}
+
+fn despawn_laser(
+    mut commands: Commands,
+    query: Query<(Entity, &Transform), With<Laser>>,
+    window_size: Res<WindowSize>,
+) {
+    let max_window_h = window_size.half_height();
+    let min_window_h = -window_size.half_height();
+
+    for (entity, transform) in query.iter() {
+        if transform.translation.y > max_window_h || transform.translation.y < min_window_h {
+            commands.entity(entity).despawn();
+        }
+    }
 }
