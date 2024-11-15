@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use bevy::{
     math::bounding::{Aabb2d, IntersectsVolume},
     prelude::*,
@@ -86,8 +88,7 @@ fn enemy_fire(
                     transform: Transform {
                         translation: Vec3::new(emit_port_x, emit_port_y, 0.0),
                         scale: Vec3::new(SPRITE_SCALE, SPRITE_SCALE, 1.0),
-                        // rotation: todo
-                        ..Default::default()
+                        rotation: Quat::from_rotation_z(PI),
                     },
                     ..Default::default()
                 },
