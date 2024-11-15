@@ -1,6 +1,6 @@
 use crate::component::{Laser, Player};
 use crate::movement::{Movement, Velocity};
-use crate::{GameTextures, WindowSize, PLAYER_SPRITE_WH, SPRITE_SCALE};
+use crate::{GameTextures, WindowSize, PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE};
 use bevy::prelude::*;
 
 #[derive(Default)]
@@ -30,7 +30,7 @@ fn spawn_player(
     window_size: Res<WindowSize>,
 ) {
     let bottom = -window_size.half_height();
-    let sprite_scaled_h = PLAYER_SPRITE_WH.1 * SPRITE_SCALE;
+    let sprite_scaled_h = PLAYER_SPRITE_SCALED_WH.1;
 
     commands.spawn((
         Player,
@@ -90,8 +90,8 @@ fn player_fire(
     if let Ok(player_transform) = player_query.get_single() {
         if button_input.just_pressed(KeyCode::Space) {
             let player_translation = player_transform.translation;
-            let sprite_scaled_h = PLAYER_SPRITE_WH.1 * SPRITE_SCALE;
-            let sprite_scaled_w = PLAYER_SPRITE_WH.0 * SPRITE_SCALE;
+            let sprite_scaled_w = PLAYER_SPRITE_SCALED_WH.0;
+            let sprite_scaled_h = PLAYER_SPRITE_SCALED_WH.1;
 
             let left_hand_x = player_translation.x - sprite_scaled_w / 2.0;
             let right_hand_x = player_translation.x + sprite_scaled_w / 2.0;
