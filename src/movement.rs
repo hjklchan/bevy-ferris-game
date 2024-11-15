@@ -22,6 +22,5 @@ pub fn movement(mut query: Query<(&mut Transform, &Velocity), With<Movement>>, r
     let delta = r_time.delta_seconds();
     for (mut transform, velocity) in query.iter_mut() {
         transform.translation += velocity.value.normalize_or_zero() * BASE_MOVEMENT_SPEED * delta;
-        println!("{} {}", transform.translation.x, transform.translation.y);
     }
 }
