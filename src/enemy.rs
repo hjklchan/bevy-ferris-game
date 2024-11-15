@@ -70,8 +70,9 @@ fn enemy_fire(
         spawn_timer.enemy_laser.tick(time.delta());
 
         let translation = &enemy_tf.translation;
-        // 发生
+        // 发射口对应的 x 轴位置
         let emit_port_x = translation.x;
+        // 发射口对应的 y 轴位置
         let emit_port_y = translation.y - ENEMY_SPRITE_SCALED_WH.1;
 
         if spawn_timer.enemy_laser.finished() {
