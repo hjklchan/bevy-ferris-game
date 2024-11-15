@@ -1,6 +1,10 @@
-use crate::component::{Laser, Player};
+use crate::component::{Enemy, FromPlayer, Laser, Player};
 use crate::movement::{Movement, Velocity};
-use crate::{GameTextures, WindowSize, PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE};
+use crate::{
+    GameTextures, WindowSize, ENEMY_SPRITE_SCALED_WH, PLAYER_LASER_SPRITE_SCALED_WH,
+    PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE,
+};
+use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
 #[derive(Default)]
@@ -21,6 +25,7 @@ impl Plugin for PlayerPlugin {
         app.add_systems(Update, player_movement);
         app.add_systems(Update, player_fire);
         app.add_systems(Update, despawn_laser);
+        app.add_systems(Update, player_laser_hit_enemy);
     }
 }
 
@@ -109,13 +114,14 @@ fn player_fire(
                             scale: Vec3::new(SPRITE_SCALE, SPRITE_SCALE, 1.0),
                             ..Default::default()
                         },
-                        texture: game_textures.laser.clone(),
+                        texture: game_textures.player_laser.clone(),
                         ..Default::default()
                     },
                     Velocity {
                         value: Vec3::new(0.0, 1.0, 0.0),
                     },
                     Movement,
+                    FromPlayer,
                 ));
             };
 
@@ -131,10 +137,40 @@ fn despawn_laser(
     window_size: Res<WindowSize>,
 ) {
     let max_window_h = window_size.half_height() - 100.0;
-    
+
     for (entity, transform) in query.iter() {
         if transform.translation.y > max_window_h {
             commands.entity(entity).despawn();
+        }
+    }
+}
+
+fn player_laser_hit_enemy(
+    mut commands: Commands,
+    laser_query: Query<(Entity, &Transform), (With<Laser>, With<FromPlayer>)>,
+    enemy_query: Query<(Entity, &Transform), With<Enemy>>,
+) {
+    for (laser_entity, laser_transform) in laser_query.iter() {
+        for (enemy_entity, enemy_transform) in enemy_query.iter() {
+            if Aabb2d::new(
+                laser_transform.translation.truncate(),
+                Vec2::new(
+                    PLAYER_LASER_SPRITE_SCALED_WH.0 / 2.0,
+                    PLAYER_LASER_SPRITE_SCALED_WH.1 / 2.0,
+                ),
+            )
+            .intersects(&Aabb2d::new(
+                enemy_transform.translation.truncate(),
+                Vec2::new(
+                    ENEMY_SPRITE_SCALED_WH.0 / 2.0,
+                    ENEMY_SPRITE_SCALED_WH.1 / 2.0,
+                ),
+            )) {
+                // remove the specified laser entity
+                commands.entity(laser_entity).despawn();
+                // remove the specified enemy entity
+                commands.entity(enemy_entity).despawn();
+            }
         }
     }
 }

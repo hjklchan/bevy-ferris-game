@@ -9,6 +9,7 @@ use crate::movement::MovementPlugin;
 use crate::player::PlayerPlugin;
 use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, WindowResolution};
+use enemy::EnemyPlugin;
 
 fn main() {
     App::new()
@@ -24,6 +25,7 @@ fn main() {
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(PlayerPlugin::with_debug())
+        .add_plugins(EnemyPlugin)
         .run();
 }
 
@@ -34,18 +36,18 @@ const PLAYER_LASER_SPRITE_PATH: &str = "laser_a_01.png";
 // 敌人精灵路径
 const ENEMY_SPRITE_PATH: &str = "enemy_a_01.png";
 // 敌人镭射精灵路径
-const ENEMY_LASER_SPRITE_PATH: &str = "laser_b_01.png.png";
+const ENEMY_LASER_SPRITE_PATH: &str = "laser_b_01.png";
 
 const SPRITE_SCALE: f32 = 0.5;
 const PLAYER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
-// calculate the width and height after scaling
+// Player - calculate the width and height after scaling
 const PLAYER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_SPRITE_WH.0 * SPRITE_SCALE,
     PLAYER_SPRITE_WH.1 * SPRITE_SCALE,
 );
 
 const PLAYER_LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
-// calculate the width and height after scaling
+// Player' laser - calculate the width and height after scaling
 const PLAYER_LASER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_LASER_SPRITE_WH.0 * SPRITE_SCALE,
     PLAYER_LASER_SPRITE_WH.1 * SPRITE_SCALE,
