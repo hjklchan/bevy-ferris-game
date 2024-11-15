@@ -49,7 +49,7 @@ fn spawn_player(
             ..Default::default()
         },
         Velocity::default(),
-        Movement,
+        Movement { per: 1.0 },
     ));
 }
 
@@ -120,7 +120,7 @@ fn player_fire(
                     Velocity {
                         value: Vec3::new(0.0, 1.0, 0.0),
                     },
-                    Movement,
+                    Movement { per: 1.0 },
                     FromPlayer,
                 ));
             };
@@ -136,15 +136,17 @@ fn despawn_laser(
     query: Query<(Entity, &Transform), With<Laser>>,
     window_size: Res<WindowSize>,
 ) {
-    let max_window_h = window_size.half_height() - 100.0;
+    let max_window_h = window_size.half_height();
+    let min_window_h = -window_size.half_height();
 
     for (entity, transform) in query.iter() {
-        if transform.translation.y > max_window_h {
+        if transform.translation.y > max_window_h || transform.translation.y < min_window_h {
             commands.entity(entity).despawn();
         }
     }
 }
 
+#[allow(clippy::type_complexity)]
 fn player_laser_hit_enemy(
     mut commands: Commands,
     laser_query: Query<(Entity, &Transform), (With<Laser>, With<FromPlayer>)>,
