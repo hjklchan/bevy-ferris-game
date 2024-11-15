@@ -1,5 +1,6 @@
 mod camera;
 mod component;
+mod enemy;
 mod movement;
 mod player;
 
@@ -26,8 +27,14 @@ fn main() {
         .run();
 }
 
+// 玩家精灵路径
 const PLAYER_SPRITE_PATH: &str = "player_a_01.png";
-const LASER_SPRITE_PATH: &str = "laser_a_01.png";
+// 玩家镭射精灵路径
+const PLAYER_LASER_SPRITE_PATH: &str = "laser_a_01.png";
+// 敌人精灵路径
+const ENEMY_SPRITE_PATH: &str = "enemy_a_01.png";
+// 敌人镭射精灵路径
+const ENEMY_LASER_SPRITE_PATH: &str = "laser_b_01.png.png";
 
 const SPRITE_SCALE: f32 = 0.5;
 const PLAYER_SPRITE_WH: (f32, f32) = (144.0, 75.0);
@@ -36,12 +43,25 @@ const PLAYER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_SPRITE_WH.0 * SPRITE_SCALE,
     PLAYER_SPRITE_WH.1 * SPRITE_SCALE,
 );
-const LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
+
+const PLAYER_LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
 // calculate the width and height after scaling
-const LASER_SPRITE_SCALED_WH: (f32, f32) = (
-    LASER_SPRITE_WH.0 * SPRITE_SCALE,
-    LASER_SPRITE_WH.1 * SPRITE_SCALE,
+const PLAYER_LASER_SPRITE_SCALED_WH: (f32, f32) = (
+    PLAYER_LASER_SPRITE_WH.0 * SPRITE_SCALE,
+    PLAYER_LASER_SPRITE_WH.1 * SPRITE_SCALE,
 );
+
+const ENEMY_SPRITE_WH: (f32, f32) = (93.0, 84.0);
+const ENEMY_SPRITE_SCALED_WH: (f32, f32) = (
+    ENEMY_SPRITE_WH.0 * SPRITE_SCALE,
+    ENEMY_SPRITE_WH.1 * SPRITE_SCALE,
+);
+const ENEMY_LASER_SPRITE_WH: (f32, f32) = (17.0, 55.0);
+const ENEMY_LASER_SPRITE_SCALED_WH: (f32, f32) = (
+    ENEMY_LASER_SPRITE_WH.0 * SPRITE_SCALE,
+    ENEMY_LASER_SPRITE_WH.1 * SPRITE_SCALE,
+);
+
 const BASE_MOVEMENT_SPEED: f32 = 500.0;
 
 #[derive(Resource)]
@@ -63,7 +83,9 @@ impl WindowSize {
 #[derive(Resource)]
 pub struct GameTextures {
     player: Handle<Image>,
-    laser: Handle<Image>,
+    enemy: Handle<Image>,
+    player_laser: Handle<Image>,
+    enemy_laser: Handle<Image>,
 }
 
 pub fn setup(mut commands: Commands, window: Query<&Window, With<PrimaryWindow>>) {
@@ -79,7 +101,9 @@ pub fn setup(mut commands: Commands, window: Query<&Window, With<PrimaryWindow>>
 pub fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     let game_textures_resource = GameTextures {
         player: asset_server.load(PLAYER_SPRITE_PATH),
-        laser: asset_server.load(LASER_SPRITE_PATH),
+        enemy: asset_server.load(ENEMY_SPRITE_PATH),
+        player_laser: asset_server.load(PLAYER_LASER_SPRITE_PATH),
+        enemy_laser: asset_server.load(ENEMY_LASER_SPRITE_PATH),
     };
 
     commands.insert_resource(game_textures_resource);
