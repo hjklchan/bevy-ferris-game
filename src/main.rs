@@ -16,6 +16,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
+                title: "SB HZ".to_string(),
                 resolution: WindowResolution::from(Vec2::new(598.0, 676.0)),
                 ..Default::default()
             }),
@@ -153,3 +154,7 @@ fn despawn_laser(
         }
     }
 }
+
+// fn run_if_player_alive(player_query: Query<(), With<Player>>) -> bool {
+//     player_query.get_single().is_ok()
+// }
