@@ -56,7 +56,7 @@ const PLAYER_SPRITE_SCALED_WH: (f32, f32) = (
 
 // 玩家镭射精灵的宽高
 const PLAYER_LASER_SPRITE_WH: (f32, f32) = (9.0, 54.0);
-// Player' laser - calculate the width and height after scaling
+// Player's laser - calculate the width and height after scaling
 // 玩家镭射精灵缩放后的宽高
 const PLAYER_LASER_SPRITE_SCALED_WH: (f32, f32) = (
     PLAYER_LASER_SPRITE_WH.0 * SPRITE_SCALE,
