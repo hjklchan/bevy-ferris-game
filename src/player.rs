@@ -1,7 +1,7 @@
 use crate::component::{Enemy, FromPlayer, Laser, Player};
 use crate::movement::{Movement, Velocity};
 use crate::{
-    GameData, GameTextures, HitEvent, WindowSize, ENEMY_SPRITE_SCALED_WH, PLAYER_LASER_SPRITE_SCALED_WH, PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE
+    GameState, GameTextures, HitEvent, WindowSize, ENEMY_SPRITE_SCALED_WH, PLAYER_LASER_SPRITE_SCALED_WH, PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE
 };
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
@@ -48,6 +48,7 @@ fn spawn_player(
         },
         Velocity::default(),
         Movement { per: 1.0 },
+        StateScoped(GameState::InGame),
     ));
 }
 

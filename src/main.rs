@@ -26,6 +26,8 @@ fn main() {
             }),
             ..Default::default()
         }))
+        .init_state::<GameState>()
+        .enable_state_scoped_entities::<GameState>()
         .add_systems(Startup, load_assets)
         .add_systems(Startup, setup)
         .add_event::<HitEvent>()
@@ -108,6 +110,14 @@ pub struct GameTextures {
     enemy: Handle<Image>,
     player_laser: Handle<Image>,
     enemy_laser: Handle<Image>,
+}
+
+#[derive(States, Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
+pub enum GameState {
+    #[default]
+    MainMenu,
+    SettingsMenu,
+    InGame,
 }
 
 #[derive(Resource, Default)]
