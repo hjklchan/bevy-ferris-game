@@ -5,6 +5,7 @@ mod component;
 mod enemy;
 mod movement;
 mod player;
+mod score;
 
 use crate::camera::CameraPlugin;
 use crate::movement::MovementPlugin;
@@ -13,6 +14,7 @@ use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, WindowResolution};
 use component::Laser;
 use enemy::EnemyPlugin;
+use score::ScorePlugin;
 
 fn main() {
     App::new()
@@ -26,10 +28,13 @@ fn main() {
         }))
         .add_systems(Startup, load_assets)
         .add_systems(Startup, setup)
+        .add_event::<HitEvent>()
+        .insert_resource(GameData::default())
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(PlayerPlugin::with_debug())
         .add_plugins(EnemyPlugin)
+        .add_plugins(ScorePlugin)
         .add_systems(Update, despawn_laser)
         .run();
 }
@@ -104,6 +109,15 @@ pub struct GameTextures {
     player_laser: Handle<Image>,
     enemy_laser: Handle<Image>,
 }
+
+#[derive(Resource, Default)]
+pub struct GameData {
+    num_dead: u32,
+    num_score: u32,
+}
+
+#[derive(Event)]
+pub struct HitEvent;
 
 // 生成实体 Timer
 #[derive(Resource)]

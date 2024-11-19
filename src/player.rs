@@ -1,8 +1,7 @@
 use crate::component::{Enemy, FromPlayer, Laser, Player};
 use crate::movement::{Movement, Velocity};
 use crate::{
-    GameTextures, WindowSize, ENEMY_SPRITE_SCALED_WH, PLAYER_LASER_SPRITE_SCALED_WH,
-    PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE,
+    GameData, GameTextures, HitEvent, WindowSize, ENEMY_SPRITE_SCALED_WH, PLAYER_LASER_SPRITE_SCALED_WH, PLAYER_SPRITE_SCALED_WH, SPRITE_SCALE
 };
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
@@ -137,6 +136,7 @@ fn player_laser_hit_enemy(
     mut commands: Commands,
     laser_query: Query<(Entity, &Transform), (With<Laser>, With<FromPlayer>)>,
     enemy_query: Query<(Entity, &Transform), With<Enemy>>,
+    mut hit_evt: EventWriter<HitEvent>,
 ) {
     for (laser_entity, laser_transform) in laser_query.iter() {
         for (enemy_entity, enemy_transform) in enemy_query.iter() {
@@ -158,6 +158,8 @@ fn player_laser_hit_enemy(
                 commands.entity(laser_entity).despawn();
                 // remove the specified enemy entity
                 commands.entity(enemy_entity).despawn();
+                // incremental score
+                hit_evt.send(HitEvent);
             }
         }
     }
